@@ -88,7 +88,6 @@ SYSTEM_PROMPT = """
 Не перегружай ответ объяснениями.
 """
 
-# Простая память текущего диалога
 history = {}
 
 
@@ -114,7 +113,6 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
         "content": user_text
     })
 
-    # Храним последние сообщения, чтобы контекст не разрастался бесконечно
     history[chat_id] = history[chat_id][-20:]
 
     try:
@@ -133,7 +131,6 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
         history[chat_id] = history[chat_id][-20:]
 
-        # Telegram имеет ограничение на размер сообщения
         if len(answer) <= 4000:
             await update.message.reply_text(answer)
         else:
@@ -141,7 +138,7 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 await update.message.reply_text(answer[i:i + 4000])
 
     except Exception as e:
-        print("ERROR:", e)
+        print("ERROR:", repr(e), flush=True)
         await update.message.reply_text(
             "Что-то пошло не так. Я пока не смогла обработать сообщение."
         )
